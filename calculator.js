@@ -165,6 +165,7 @@ let calculator_buttons = [
     type: "math_function"
   },
   {
+    // e raised to power x
     name: "exp",
     symbol: "exp",
     formula: "Math.exp",
@@ -269,6 +270,19 @@ function createCalculatorButtons(){
 }
 createCalculatorButtons();
 
+// RADIAN AND DEGREE
+let RADIAN = true;
+const rad_btn = document.getElementById("rad");
+const deg_btn = document.getElementById("deg");
+
+rad_btn.classList.add("active-angle");
+
+function angleToggler(){
+  rad_btn.classList.toggle("active-angle");
+  deg_btn.classList.toggle("active-angle");
+}
+
+
 // EVENT LISTENER FOR INPUT (MOUSE CLICK)
 input_element.addEventListener("click", function(event){
   const target_btn = event.target;
@@ -282,7 +296,6 @@ input_element.addEventListener("click", function(event){
 
 // EVENT LISTENER FOR INPUT (KEYBOARD PRESS)
 document.addEventListener("keydown", function(event){
-  console.log(event.key);
   // Check which key was pressed
   calculator_buttons.forEach(button => {
     if((button.name == event.key)||(button.formula == event.key)){
@@ -303,15 +316,69 @@ function calculator(button){
     data.formula.push(button.formula);
   }
   else if(button.type == "trigo_function"){
-
+    // Append required symbols and paranthesis for display and calculation purposes
+    data.operation.push(button.symbol + "(");
+    data.formula.push(button.formula);
   }
   else if(button.type == "math_function"){
+    // Append required symbols and paranthesis for display and calculation purposes
+    let symbol, formula;
+
+    if(button.name == "factorial"){
+      symbol = "!";
+      formula = button.formula;
+      data.operation.push(symbol);
+      data.formula.push(formula);
+    }
+    else if(button.name == "power"){
+      symbol = "^(";
+      formula = button.formula + "(";
+      data.operation.push(symbol);
+      data.formula.push(formula);
+    }
+    else if(button.name == "square"){
+      symbol = "^(";
+      formula = button.formula + "(";
+      data.operation.push(symbol);
+      data.formula.push(formula);
+      symbol = "^(";
+      formula = button.formula + "(";
+      data.operation.push("2)");
+      data.formula.push("2)");
+    }
+    else{
+      symbol = button.symbol + "(";
+      formula = button.formula + "(";
+      data.operation.push(symbol);
+      data.formula.push(formula);
+    }
 
   }
   else if(button.type == "key"){
 
+    if(button.name == "clear"){
+      // Clear output screen
+      data.operation = [];
+      data.formula = [];
+      updateOutputResult(0);
+    }
+    else if(button.name == "Backspace"){
+      // Delete one character from the end
+      data.operation.pop();
+      data.formula.pop();
+    }
+    else if(button.name == "rad"){
+      RADIAN = true;
+      angleToggler();
+    }
+    else if(button.name == "deg"){
+      RADIAN = false;
+      angleToggler();
+    }
+
   }
   else if(button.type == "calculate"){
+    // Evaluate expression
     formula_str = data.formula.join('');
     let result = eval(formula_str);
     updateOutputResult(result);
@@ -346,4 +413,21 @@ function gamma(n) { // accurate to about 15 decimal places
     var t = n + g + 0.5;
     return Math.sqrt(2 * Math.PI) * Math.pow(t, (n + 0.5)) * Math.exp(-t) * x;
   }
+}
+
+// TRIGONOMETRIC FUNCTION
+function trigo(callback, angle){
+  if(!RADIAN){
+    angle = angle * Math.PI/180;
+  }
+  return callback(angle);
+}
+
+// INVERSE TRIGONOMETRIC FUNCTION
+function inv_trigo(callback, value){
+  let angle = callback(value);
+  if(!RADIAN){
+    angle = angle * 180/Math.PI;
+  }
+  return angle;
 }
