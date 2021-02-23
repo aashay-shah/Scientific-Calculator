@@ -3,15 +3,15 @@
 // SELECT ELEMENTS
 const input_element = document.querySelector('.input');
 const output_operation_element = document.querySelector('.operation .value');
-const ouput_resuly_element = document.querySelector('.result .value');
+const output_result_element = document.querySelector('.result .value');
 
 // VARIABLES
 const OPERATORS = ["+", "-", "*", "/"];
 const POWER = "POWER(";
 const FACTORIAL = "FACTORIAL";
 let data = {
-  operation : [],
-  formula : []
+  operation : [], // Used for display on output opaertaion screen
+  formula : []    // Used for calculation purpose
 };
 
 // CALCULATOR BUTTONS
@@ -59,7 +59,7 @@ let calculator_buttons = [
     type: "key"
   },
   {
-    name: "delete",
+    name: "Backspace",
     symbol: "⌫",
     formula: false,
     type: "key"
@@ -269,7 +269,66 @@ function createCalculatorButtons(){
 }
 createCalculatorButtons();
 
+// EVENT LISTENER FOR INPUT (MOUSE CLICK)
+input_element.addEventListener("click", function(event){
+  const target_btn = event.target;
+  // Check which button was clicked
+  calculator_buttons.forEach(button => {
+    if(button.name == target_btn.id){
+      calculator(button);
+    }
+  });
+});
 
+// EVENT LISTENER FOR INPUT (KEYBOARD PRESS)
+document.addEventListener("keydown", function(event){
+  console.log(event.key);
+  // Check which key was pressed
+  calculator_buttons.forEach(button => {
+    if((button.name == event.key)||(button.formula == event.key)){
+      calculator(button);
+    }
+  });
+});
+
+// CALCULATOR
+function calculator(button){
+  // Identify type of button
+  if(button.type == "operator"){
+    data.operation.push(button.symbol);
+    data.formula.push(button.formula);
+  }
+  else if(button.type == "number"){
+    data.operation.push(button.symbol);
+    data.formula.push(button.formula);
+  }
+  else if(button.type == "trigo_function"){
+
+  }
+  else if(button.type == "math_function"){
+
+  }
+  else if(button.type == "key"){
+
+  }
+  else if(button.type == "calculate"){
+    formula_str = data.formula.join('');
+    let result = eval(formula_str);
+    updateOutputResult(result);
+  }
+  // Update the output operation screen
+  updateOutputOperation(data.operation.join(''));
+}
+
+// UPDATE OUTPUT OPERATION SCREEN
+function updateOutputOperation(operation){
+  output_operation_element.innerHTML = operation;
+}
+
+// UPDATE OUTPUT RESULT SCREEN
+function updateOutputResult(result){
+  output_result_element.innerHTML = result;
+}
 
 // GAMMA FUNCTINON
 function gamma(n) { // accurate to about 15 decimal places
