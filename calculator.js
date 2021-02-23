@@ -1,6 +1,22 @@
 // jshint esversion:6
 
-let calculator_buttons = [{
+// SELECT ELEMENTS
+const input_element = document.querySelector('.input');
+const output_operation_element = document.querySelector('.operation .value');
+const ouput_resuly_element = document.querySelector('.result .value');
+
+// VARIABLES
+const OPERATORS = ["+", "-", "*", "/"];
+const POWER = "POWER(";
+const FACTORIAL = "FACTORIAL";
+let data = {
+  operation : [],
+  formula : []
+};
+
+// CALCULATOR BUTTONS
+let calculator_buttons = [
+  {
     name: "rad",
     symbol: "Rad",
     formula: false,
@@ -233,6 +249,27 @@ let calculator_buttons = [{
     type: "operator"
   }
 ];
+
+// CREATE CALCULATOR BUTTONS
+function createCalculatorButtons(){
+  const btns_per_row = 8; // We will have 8 buttons per row
+  let added_btns = 0;
+
+  calculator_buttons.forEach(button =>{
+    // Check if row is complete
+    if(added_btns % btns_per_row == 0){
+      input_element.innerHTML += '<div class="row"></div>';
+    }
+
+    // Select last row for inserting buttons
+    const row = document.querySelector(".row:last-child");
+    row.innerHTML += '<button id=' + button.name + '>' + button.symbol + '</button';
+    added_btns += 1;
+  });
+}
+createCalculatorButtons();
+
+
 
 // GAMMA FUNCTINON
 function gamma(n) { // accurate to about 15 decimal places
